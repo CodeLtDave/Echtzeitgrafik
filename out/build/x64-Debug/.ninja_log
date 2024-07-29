@@ -1,0 +1,5 @@
+# ninja log v5
+9	402	7439604975453159	CMakeFiles/STB_IMAGE.dir/thirdparty/stb_image.cpp.obj	8515418fed55a3c8
+403	458	7439604975922124	STB_IMAGE.lib	6b768d44e9cf6fc7
+5	1372	7439604984359437	CMakeFiles/Echtzeitgrafik.dir/src/main.cpp.obj	df273845a9366cf0
+1375	1746	7439604988265655	Echtzeitgrafik.exe	b4b5e246738cc32d
