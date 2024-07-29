@@ -7,13 +7,17 @@
 #include <glm/glm.hpp>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include "helper/RootDir.h"
 
+#include "shared/data.h"
 #include "shared/functions.h"
+#include "Shader/shader.hpp"
 
 int main(int argc, char** argv) 
 {
     std::cout << "Hello World!" << std::endl;
 
+    
     GLFWwindow* window = initAndCreateWindow();
     glViewport(0, 0, 800, 600);
 
