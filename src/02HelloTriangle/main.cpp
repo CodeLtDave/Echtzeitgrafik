@@ -13,6 +13,8 @@
 #include "shared/data.h"
 #include "shared/GeometryBuffer.hpp"
 
+void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 int main(int argc, char** argv) 
 {
     std::cout << "Hello HelloTriangle!" << std::endl;
@@ -37,11 +39,15 @@ int main(int argc, char** argv)
     glUseProgram(shaderProgram);
     glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
 
+    /* Register Space Bar to Projection Swap*/
+    glfwSetWindowUserPointer(window, &shaderProgram);
+    glfwSetKeyCallback(window, spaceBarPressed);
+
+    setShaderUniforms(shaderProgram);
+
     while (glfwWindowShouldClose(window) == 0)
     {
-        glfwSetKeyCallback(window, spaceBarPressed(window, GLFW_KEY_SPACE, 0, GLFW_PRESS, 0));
-
-        setShaderUniforms(shaderProgram);
+        setContinousUniforms(shaderProgram);
 
         // clear the window
         glClearColor(0.0f, 0.1f, 0.2f, 1.0f);
@@ -64,7 +70,9 @@ int main(int argc, char** argv)
 }
 
 void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (key == GLFW_KEY_SPACE) {
-
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        std::cout << "Space Bar Pressed" << std::endl;
+        GLint* shaderProgram = static_cast<GLint*>(glfwGetWindowUserPointer(window));
+        swapPerspective(*shaderProgram);
     }
 }
