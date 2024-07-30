@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     /* Color attribute */
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
+    geometryBuffer.unbindVertexArray();
 
     glUseProgram(shaderProgram);
     glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 
         geometryBuffer.bindVertexArray();
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(0);
+        geometryBuffer.unbindVertexArray();
 
         // swap buffer
         glfwSwapBuffers(window);
