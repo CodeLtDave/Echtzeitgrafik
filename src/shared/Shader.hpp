@@ -14,5 +14,4 @@ void setUniform(GLint location, glm::vec3 value);
 void setUniform(GLint location, glm::vec4 value);
 void setUniform(GLint location, glm::mat4 value);
 
-;
 #endif
