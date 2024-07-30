@@ -56,3 +56,17 @@ GLFWwindow* initAndCreateWindow(bool debugContext = false)
 
     return window;
 }
+
+static double lastTime = glfwGetTime();
+void calculateFPS()
+{
+	static int nbFrames = 0;
+	double currentTime = glfwGetTime();
+	nbFrames++;
+	if (currentTime - lastTime >= 1.0)
+	{
+		std::cout << "FPS: " << double(nbFrames) << std::endl;
+		nbFrames = 0;
+		lastTime += 1.0;
+	}
+}

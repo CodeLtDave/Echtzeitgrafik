@@ -52,6 +52,8 @@ int main(int argc, char** argv)
 
         // process user events
         glfwPollEvents();
+
+        calculateFPS();
     }
 
     glfwTerminate();
