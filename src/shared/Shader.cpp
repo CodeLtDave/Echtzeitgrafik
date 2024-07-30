@@ -84,3 +84,10 @@ void setShaderUniforms(GLint shaderProgram)
     int perspectiveLoc = glGetUniformLocation(shaderProgram, "projection");
     glUniformMatrix4fv(perspectiveLoc, 1, GL_FALSE, glm::value_ptr(projection));
 }
+
+void changeView(GLint shaderProgram, glm::mat4 mat4) {
+
+    glm::mat4 view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    int viewLoc = glGetUniformLocation(shaderProgram, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+}

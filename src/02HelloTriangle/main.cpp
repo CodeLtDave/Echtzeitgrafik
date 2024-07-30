@@ -39,6 +39,8 @@ int main(int argc, char** argv)
 
     while (glfwWindowShouldClose(window) == 0)
     {
+        glfwSetKeyCallback(window, spaceBarPressed(window, GLFW_KEY_SPACE, 0, GLFW_PRESS, 0));
+
         setShaderUniforms(shaderProgram);
 
         // clear the window
@@ -59,4 +61,10 @@ int main(int argc, char** argv)
     }
 
     glfwTerminate();
+}
+
+void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_SPACE) {
+
+    }
 }
