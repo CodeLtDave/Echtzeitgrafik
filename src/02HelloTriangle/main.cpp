@@ -10,16 +10,7 @@
 
 #include "shared/functions.h"
 #include "shared/Shader.hpp"
-#include "res/shader.frag"
-#include "res/shader.vert"
-
-GLfloat triangle[] =
-{
-    /*   Positions            Colors */
-         0.9f, -0.9f, 0.0f,   1.0f, 0.0f, 0.0f,
-        -0.9f, -0.9f, 0.0f,   0.0f, 1.0f, 0.0f,
-         0.0f,  0.9f, 0.0f,   0.0f, 0.0f, 1.0f
-};
+#include "shared/data.h"
 
 int main(int argc, char** argv) 
 {
@@ -28,7 +19,7 @@ int main(int argc, char** argv)
     GLFWwindow* window = initAndCreateWindow();
     glViewport(0, 0, 800, 600);
 
-    GLint shaderProgram = createShaderPipeline(simpleVertexShaderSource, simpleFragmentShaderSource);
+    GLint shaderProgram = createShaderPipeline(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
     GLuint vao, vbo;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);

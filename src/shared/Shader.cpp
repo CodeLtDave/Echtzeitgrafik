@@ -1,13 +1,29 @@
 #include "Shader.hpp"
 #include <cstdio> // für printf
+#include <fstream>
 
 #define INFOLOG_LEN 512
 
-GLint createShaderPipeline(const char* vertexSource, const char* fragmentSource)
+std::string readShaderSource(const std::filesystem::path& shaderPath)
 {
+    std::ifstream shaderFile(shaderPath);
+    std::string shaderSource((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
+    return shaderSource;
+}
+
+GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath)
+{
+    /* Read vertex shader source */
+    std::string vertexSource = readShaderSource(vertexShaderPath);
+    const char* vertexSourcePtr = vertexSource.c_str();
+
+    /* Read fragment shader source */
+    std::string fragmentSource = readShaderSource(fragmentShaderPath);
+    const char* fragmentSourcePtr = fragmentSource.c_str();
+
     /* Vertex shader */
     GLint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexSource, NULL);
+    glShaderSource(vertexShader, 1, &vertexSourcePtr, NULL);
     glCompileShader(vertexShader);
     GLint success;
     GLchar infoLog[INFOLOG_LEN];
@@ -20,7 +36,7 @@ GLint createShaderPipeline(const char* vertexSource, const char* fragmentSource)
 
     /* Fragment shader */
     GLint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+    glShaderSource(fragmentShader, 1, &fragmentSourcePtr, NULL);
     glCompileShader(fragmentShader);
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success)
