@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 #define INFOLOG_LEN 512
 
@@ -69,25 +70,42 @@ GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const 
 
 void setShaderUniforms(GLint shaderProgram)
 {
-    glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection;
-    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+    
     //model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 
-    int modelLoc = glGetUniformLocation(shaderProgram, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     int viewLoc = glGetUniformLocation(shaderProgram, "view");
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     int perspectiveLoc = glGetUniformLocation(shaderProgram, "projection");
     glUniformMatrix4fv(perspectiveLoc, 1, GL_FALSE, glm::value_ptr(projection));
 }
 
-void changeView(GLint shaderProgram, glm::mat4 mat4) {
+void setContinousUniforms(GLint shaderProgram)
+{
+    glm::mat4 model = glm::mat4(1.0f);
 
-    glm::mat4 view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    int viewLoc = glGetUniformLocation(shaderProgram, "view");
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
+    int modelLoc = glGetUniformLocation(shaderProgram, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+}
+
+void swapPerspective(GLint shaderProgram) {
+    glm::mat4 projection;
+    if (projectionIsPerspective) {
+		projectionIsPerspective = false;
+        projection = glm::ortho(-40.0f, 40.0f, -30.0f, 30.0f, 0.1f, 1000.0f);
+        std::cout << "Projection changed to orthogonal" << std::endl;
+    }
+    else {
+        projectionIsPerspective = true;
+        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
+        std::cout << "Projection changed to perspective" << std::endl;
+    }
+
+    int perspectiveLoc = glGetUniformLocation(shaderProgram, "projection");
+    glUniformMatrix4fv(perspectiveLoc, 1, GL_FALSE, glm::value_ptr(projection));
 }
