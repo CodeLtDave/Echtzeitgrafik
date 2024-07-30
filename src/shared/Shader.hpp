@@ -5,8 +5,6 @@
 #include <glm/glm.hpp>
 #include <filesystem>
 
-private char currentView = 'ortho';
-
 std::string readShaderSource(const std::filesystem::path& shaderPath);
 GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
 void setShaderUniforms(GLint shaderProgram);	
