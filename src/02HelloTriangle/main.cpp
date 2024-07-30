@@ -10,8 +10,8 @@
 
 #include "shared/functions.h"
 #include "shared/Shader.hpp"
-#include "shared/res/shader.frag"
-#include "shared/res/shader.vert"
+#include "res/shader.frag"
+#include "res/shader.vert"
 
 GLfloat triangle[] =
 {
