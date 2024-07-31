@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     glEnableVertexAttribArray(1);
     
     /* Normal Vector attribute (for light calculation)  */
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
 
     geometryBuffer.unbindVertexArray();
