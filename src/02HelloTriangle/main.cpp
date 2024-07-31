@@ -35,9 +35,27 @@ int main(int argc, char** argv)
     /* Color attribute */
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
+    
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
     geometryBuffer.unbindVertexArray();
 
+    
     glUseProgram(shaderProgram);
+
+    // Uniform Locations
+    GLint lightPosLoc = glGetUniformLocation(shaderProgram, "lightPos");
+    GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
+    GLint lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
+    GLint objColorLoc = glGetUniformLocation(shaderProgram, "objColor");
+
+    // Uniform Werte setzen
+    glUniform3f(lightPosLoc, 1.2f, 1.0f, 2.0f);
+    glUniform3f(viewPosLoc, 0.0f, 0.0f, 3.0f);
+    glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+    glUniform3f(objColorLoc, 0.78f, 0.66f, 0.46f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
 
     /* Register Space Bar to Projection Swap*/
