@@ -46,6 +46,8 @@ int main(int argc, char** argv)
 
     setShaderUniforms(shaderProgram);
 
+    glEnable(GL_DEPTH_TEST);
+
     while (glfwWindowShouldClose(window) == 0)
     {
         setContinousUniforms(shaderProgram);
