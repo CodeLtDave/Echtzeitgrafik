@@ -13,7 +13,13 @@
 #include "shared/data.h"
 #include "shared/GeometryBuffer.hpp"
 
-void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods);
+void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        std::cout << "Space Bar Pressed" << std::endl;
+        GLint* shaderProgram = static_cast<GLint*>(glfwGetWindowUserPointer(window));
+        swapPerspective(*shaderProgram);
+    }
+}
 
 int main(int argc, char** argv) 
 {
@@ -91,10 +97,3 @@ int main(int argc, char** argv)
     glfwTerminate();
 }
 
-void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-        std::cout << "Space Bar Pressed" << std::endl;
-        GLint* shaderProgram = static_cast<GLint*>(glfwGetWindowUserPointer(window));
-        swapPerspective(*shaderProgram);
-    }
-}
