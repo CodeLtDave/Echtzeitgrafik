@@ -73,3 +73,18 @@ void GeometryBuffer::unbindVertexArray() const
     //set vao to 0 effectively unbinding it to avoid accidental changes
 	glBindVertexArray(0);
 }
+
+void GeometryBuffer::setupAttributes() {
+    bindVertexArray();
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
+    unbindVertexArray();
+}
+

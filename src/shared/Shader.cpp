@@ -68,7 +68,7 @@ GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const 
     return shaderProgram;
 }
 
-void setShaderUniforms(GLint shaderProgram)
+void setUniforms(GLint shaderProgram)
 {
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection;
@@ -81,6 +81,14 @@ void setShaderUniforms(GLint shaderProgram)
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     int perspectiveLoc = glGetUniformLocation(shaderProgram, "projection");
     glUniformMatrix4fv(perspectiveLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+
+    GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
+    GLint objColorLoc = glGetUniformLocation(shaderProgram, "objColor");
+
+    glUniform3f(viewPosLoc, 0.0f, 0.0f, 3.0f);
+    glUniform3f(objColorLoc, 0.78f, 0.66f, 0.46f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
 }
 
 void setContinousUniforms(GLint shaderProgram)

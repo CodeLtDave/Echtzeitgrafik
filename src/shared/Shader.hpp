@@ -9,7 +9,7 @@ static bool projectionIsPerspective = true;
 
 std::string readShaderSource(const std::filesystem::path& shaderPath);
 GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
-void setShaderUniforms(GLint shaderProgram);	
+void setUniforms(GLint shaderProgram);	
 void setContinousUniforms(GLint shaderProgram);
 void swapPerspective(GLint shaderProgram);
 

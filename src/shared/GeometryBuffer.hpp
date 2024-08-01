@@ -18,6 +18,7 @@ public:
     void bindVertexArray() const;
     void unbindVertexArray() const;
     GLuint getVao() const { return m_vao; }
+    void GeometryBuffer::setupAttributes();
 
 private:
     GLuint m_vao;

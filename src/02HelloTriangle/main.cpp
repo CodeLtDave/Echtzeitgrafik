@@ -29,21 +29,7 @@ public:
 
         GeometryBuffer geometryBuffer;
         geometryBuffer.bindAndUploadBufferData(sizeof(cube), cube, GL_STATIC_DRAW);
-
-        /* Position attribute */
-        geometryBuffer.bindVertexArray();
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-        glEnableVertexAttribArray(0);
-
-        /* Color attribute */
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(1);
-
-        /* Normal Vector attribute (for light calculation)  */
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(2);
-
-        geometryBuffer.unbindVertexArray();
+        geometryBuffer.setupAttributes();
 
         glUseProgram(shaderProgram);
 
@@ -51,16 +37,7 @@ public:
         PointLight pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
         pointLight.apply(shaderProgram);
 
-        // Uniform Locations
-        GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
-        GLint objColorLoc = glGetUniformLocation(shaderProgram, "objColor");
-
-        // Uniform Werte setzen
-        glUniform3f(viewPosLoc, 0.0f, 0.0f, 3.0f);
-        glUniform3f(objColorLoc, 0.78f, 0.66f, 0.46f);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
-
-        setShaderUniforms(shaderProgram);
+        setUniforms(shaderProgram);
 
         glEnable(GL_DEPTH_TEST);
 
@@ -103,7 +80,7 @@ private:
     }
 };
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     SolarSystemSimulation simulation;
     simulation.run();
