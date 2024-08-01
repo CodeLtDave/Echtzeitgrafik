@@ -25,7 +25,8 @@ int main(int argc, char** argv)
     GLint shaderProgram = createShaderPipeline(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
     
     GeometryBuffer geometryBuffer;
-    geometryBuffer.bindAndUploadBufferData(sizeof(triangle), triangle, GL_STATIC_DRAW);
+    //TODO Cube in seperate Main
+    geometryBuffer.bindAndUploadBufferData(sizeof(cube), cube, GL_STATIC_DRAW);
 
     /* Position attribute */
     geometryBuffer.bindVertexArray();
@@ -45,16 +46,18 @@ int main(int argc, char** argv)
 
     setShaderUniforms(shaderProgram);
 
+    glEnable(GL_DEPTH_TEST);
+
     while (glfwWindowShouldClose(window) == 0)
     {
         setContinousUniforms(shaderProgram);
 
         // clear the window
         glClearColor(0.0f, 0.1f, 0.2f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         geometryBuffer.bindVertexArray();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         geometryBuffer.unbindVertexArray();
 
         // swap buffer

@@ -97,7 +97,7 @@ void swapPerspective(GLint shaderProgram) {
     glm::mat4 projection;
     if (projectionIsPerspective) {
 		projectionIsPerspective = false;
-        projection = glm::ortho(-40.0f, 40.0f, -30.0f, 30.0f, 0.1f, 1000.0f);
+        projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, 0.1f, 1000.0f);
         std::cout << "Projection changed to orthogonal" << std::endl;
     }
     else {
