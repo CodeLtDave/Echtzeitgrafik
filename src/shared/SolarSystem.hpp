@@ -1,21 +1,23 @@
 #ifndef SOLARSYSTEM_HPP
 #define SOLARSYSTEM_HPP
 
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-#include "GeometryBuffer.hpp"
+#include <vector>
 #include <filesystem>
+#include "Planet.hpp"
 
 class SolarSystem {
 public:
-    SolarSystem(const std::filesystem::path& spherePath);
+    SolarSystem();
     ~SolarSystem();
+
+    void loadSphere(const std::filesystem::path& spherePath);
     void draw(GLint shaderProgram);
+    void loadPlanets();
 
 private:
+
+    std::vector<Planet> m_planets;
     GeometryBuffer m_geometryBuffer;
-    void loadSphere(const std::filesystem::path& spherePath);
 };
 
 #endif // SOLARSYSTEM_HPP
