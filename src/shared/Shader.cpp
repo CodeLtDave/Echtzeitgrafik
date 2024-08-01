@@ -68,28 +68,38 @@ GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const 
     return shaderProgram;
 }
 
-void setUniforms(GLint shaderProgram)
-{
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection;
-    
-    //model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
+void setUniforms(GLint shaderProgram) {
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-    int viewLoc = glGetUniformLocation(shaderProgram, "view");
+    GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+    GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
+    GLint projLoc = glGetUniformLocation(shaderProgram, "projection");
+
+    if (modelLoc == -1 || viewLoc == -1 || projLoc == -1) {
+        std::cerr << "Error: Uniform location not found" << std::endl;
+    }
+
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    int perspectiveLoc = glGetUniformLocation(shaderProgram, "projection");
-    glUniformMatrix4fv(perspectiveLoc, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-
-    GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
     GLint objColorLoc = glGetUniformLocation(shaderProgram, "objColor");
+    GLint lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
+    GLint lightPosLoc = glGetUniformLocation(shaderProgram, "lightPos");
+    GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
 
-    glUniform3f(viewPosLoc, 0.0f, 0.0f, 3.0f);
-    glUniform3f(objColorLoc, 0.78f, 0.66f, 0.46f);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
+    if (objColorLoc == -1 || lightColorLoc == -1 || lightPosLoc == -1 || viewPosLoc == -1) {
+        std::cerr << "Error: Uniform location not found" << std::endl;
+    }
+
+    glUniform3f(objColorLoc, 1.0f, 0.5f, 0.31f);
+    glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+    glUniform3f(lightPosLoc, 1.2f, 1.0f, 2.0f);
+    glUniform3f(viewPosLoc, 0.0f, 0.0f, 5.0f);
 }
+
 
 void setContinousUniforms(GLint shaderProgram)
 {

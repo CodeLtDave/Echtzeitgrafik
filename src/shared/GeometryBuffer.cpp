@@ -52,7 +52,7 @@ GeometryBuffer& GeometryBuffer::operator=(GeometryBuffer&& other) noexcept	//mov
 void GeometryBuffer::bindAndUploadBufferData(GLsizeiptr size, const GLvoid* data, GLenum usage)
 {
     //bind vao and vbo
-    glBindVertexArray(m_vao);
+    bindVertexArray();
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
     //upload data to vbo
@@ -88,3 +88,8 @@ void GeometryBuffer::setupAttributes() {
     unbindVertexArray();
 }
 
+
+GLsizei GeometryBuffer::getVertexCount() const
+{
+	return m_vertexCount;
+}

@@ -13,6 +13,7 @@
 #include "shared/data.h"
 #include "shared/GeometryBuffer.hpp"
 #include "shared/PointLight.hpp"
+#include "shared/SolarSystem.hpp"
 
 class SolarSystemSimulation {
 public:
@@ -22,14 +23,17 @@ public:
         shaderProgram = createShaderPipeline(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
         glfwSetWindowUserPointer(window, this);
         glfwSetKeyCallback(window, SolarSystemSimulation::spaceBarPressed);
+
+        // SolarSystem initialisieren
+        solarSystem = new SolarSystem(SPHERE_PATH);
+    }
+
+    ~SolarSystemSimulation() {
+        delete solarSystem;
     }
 
     void run() {
         glViewport(0, 0, 800, 600);
-
-        GeometryBuffer geometryBuffer;
-        geometryBuffer.bindAndUploadBufferData(sizeof(cube), cube, GL_STATIC_DRAW);
-        geometryBuffer.setupAttributes();
 
         glUseProgram(shaderProgram);
 
@@ -49,9 +53,8 @@ public:
             glClearColor(0.0f, 0.1f, 0.2f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            geometryBuffer.bindVertexArray();
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            geometryBuffer.unbindVertexArray();
+            // Zeichne die Kugel
+            solarSystem->draw(shaderProgram);
 
             // swap buffer
             glfwSwapBuffers(window);
@@ -68,6 +71,7 @@ public:
 private:
     GLFWwindow* window;
     GLint shaderProgram;
+    SolarSystem* solarSystem;
 
     static void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {

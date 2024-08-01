@@ -19,6 +19,9 @@ public:
     void unbindVertexArray() const;
     GLuint getVao() const { return m_vao; }
     void GeometryBuffer::setupAttributes();
+    GLsizei getVertexCount() const;
+
+    GLsizei m_vertexCount;
 
 private:
     GLuint m_vao;
