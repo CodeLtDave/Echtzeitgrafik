@@ -45,6 +45,8 @@ public:
 
         GLint modelLoc = shader->getLocation("model");
         shader->setUniform(modelLoc, modelMatrix);
+        GLint viewPosLoc = shader->getLocation("viewPos");
+        shader->setUniform(viewPosLoc, viewPosVec);
         GLint viewLoc = shader->getLocation("view");
         shader->setUniform(viewLoc, viewMatrix);
         GLint projLoc = shader->getLocation("projection");
