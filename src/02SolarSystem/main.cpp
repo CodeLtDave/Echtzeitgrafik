@@ -165,13 +165,7 @@ private:
 
 int main(int argc, char** argv)
 {    
-    // Aktiviere Speicherleck-Erkennung
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
- 
     SolarSystemSimulation simulation;
     simulation.run();
-
-    _CrtDumpMemoryLeaks();
     return 0;
 }

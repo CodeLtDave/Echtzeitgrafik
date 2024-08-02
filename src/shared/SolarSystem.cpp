@@ -49,6 +49,6 @@ void SolarSystem::loadPlanets() {
 
     for (auto& planet : m_planets) {
         planet.loadTexture();
-        planet.loadMesh(SPHERE_PATH); // Pfad zum Mesh anpassen
+        planet.loadMesh(SPHERE_PATH);
     }
 }

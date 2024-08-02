@@ -19,4 +19,4 @@ private:
     glm::vec3 m_color;
 };
 
-#endif // POINTLIGHT_HPP
+#endif

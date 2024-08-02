@@ -1,5 +1,5 @@
 #include "Shader.hpp"
-#include <cstdio> // f�r printf
+#include <cstdio>
 #include <fstream>
 #include <glm/ext/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
