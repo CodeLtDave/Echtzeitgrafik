@@ -28,6 +28,13 @@ void SolarSystem::draw(GLint shaderProgram) {
         // Rotation around its own axis
         model = glm::rotate(model, time * glm::radians(planet.getRotationSpeed()), glm::vec3(0.0f, 1.0f, 0.0f));
 
+        if (planet.getName() == "Sonne") {
+            glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 1.0f, 1.0f, 0.0f); // Yellow emission
+        }
+        else {
+            glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 0.0f, 0.0f, 0.0f); // No emission
+        }
+
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
         planet.m_geometryBuffer.m_vertexCount = 32512;
         planet.draw(shaderProgram);

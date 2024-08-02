@@ -9,6 +9,7 @@ uniform vec3 lightPos; // Position des Lichts
 uniform vec3 viewPos; // Position der Kamera
 uniform vec3 lightColor; // Farbe des Lichts
 uniform vec3 objColor; // Farbe des Objekts
+uniform vec3 emission;
 
 void main()
 {
@@ -29,6 +30,6 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 result = (ambient + diffuse + specular) * fragColor;
+    vec3 result = (ambient + diffuse + specular + emission) * objColor;
     color = vec4(result, 1.0);
 }
