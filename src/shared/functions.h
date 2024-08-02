@@ -56,6 +56,9 @@ GLFWwindow* initAndCreateWindow(bool debugContext = false)
     }
     glEnable(GL_MULTISAMPLE);
 
+
+    stbi_set_flip_vertically_on_load(false);
+
     return window;
 }
 

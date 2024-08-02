@@ -10,7 +10,49 @@ Texture::Texture(const std::filesystem::path& filePath)
 }
 
 Texture::~Texture() {
-    glDeleteTextures(1, &m_textureID);
+    release();
+}
+
+Texture::Texture(const Texture& other)
+    : m_target(other.m_target), m_textureID(0), m_width(other.m_width), m_height(other.m_height), m_channels(other.m_channels) {
+    glGenTextures(1, &m_textureID);
+}
+
+Texture& Texture::operator=(const Texture& other) {
+    if (this != &other) {
+        release();
+        m_target = other.m_target;
+        m_width = other.m_width;
+        m_height = other.m_height;
+        m_channels = other.m_channels;
+        glGenTextures(1, &m_textureID);
+    }
+    return *this;
+}
+
+Texture::Texture(Texture&& other) noexcept
+    : m_target(other.m_target), m_textureID(other.m_textureID), m_width(other.m_width), m_height(other.m_height), m_channels(other.m_channels) {
+    other.m_textureID = 0;
+}
+
+Texture& Texture::operator=(Texture&& other) noexcept {
+    if (this != &other) {
+        release();
+        m_target = other.m_target;
+        m_textureID = other.m_textureID;
+        m_width = other.m_width;
+        m_height = other.m_height;
+        m_channels = other.m_channels;
+        other.m_textureID = 0;
+    }
+    return *this;
+}
+
+void Texture::release() {
+    if (m_textureID != 0) {
+        glDeleteTextures(1, &m_textureID);
+        m_textureID = 0;
+    }
 }
 
 void Texture::bind(GLenum textureUnit) const {
@@ -37,7 +79,6 @@ void Texture::setFiltering(GLenum minFilter, GLenum magFilter) {
 }
 
 void Texture::loadTexture(const std::filesystem::path& filePath) {
-    stbi_set_flip_vertically_on_load(false);
     unsigned char* data = stbi_load(filePath.string().c_str(), &m_width, &m_height, &m_channels, 0);
     if (!data) {
         throw std::runtime_error("Failed to load texture: " + filePath.string());
