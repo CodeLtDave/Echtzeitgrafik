@@ -9,6 +9,7 @@ Planet::Planet(const std::string& name, float rotationSpeed, float orbitSpeed, f
     : m_name(name), m_rotationSpeed(rotationSpeed), m_orbitSpeed(orbitSpeed), m_distanceToSun(distanceToSun), m_size(size), m_texture(nullptr) {}
 
 void Planet::loadMesh(const std::filesystem::path& meshPath) {
+
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(meshPath.string(), aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -29,6 +30,7 @@ void Planet::loadMesh(const std::filesystem::path& meshPath) {
         if (mesh->mTextureCoords[0]) {
             vertices.push_back(mesh->mTextureCoords[0][i].x);
             vertices.push_back(mesh->mTextureCoords[0][i].y);
+            vertices.push_back(1.0f);
         }
         else {
             vertices.push_back(0.0f);
@@ -36,18 +38,25 @@ void Planet::loadMesh(const std::filesystem::path& meshPath) {
         }
     }
 
+    std::vector<uint32_t> indices;
+    for( unsigned int i = 0; i < mesh->mNumFaces; i++) {
+		aiFace face = mesh->mFaces[i];
+		for (unsigned int j = 0; j < face.mNumIndices; j++) {
+			indices.push_back(face.mIndices[j]);
+		}
+	}
+
+
     std::filesystem::path texturePath = PLANET_TEXTURE_PATH / ("2k_" + m_name + ".jpg");
     m_texture = new Texture(texturePath);
-    m_geometryBuffer.bindAndUploadBufferData(vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+    m_geometryBuffer.bindAndUploadBufferData(vertices.size() * sizeof(float), vertices.data(), indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
     m_geometryBuffer.setupAttributes();
     std::cout << "Mesh loaded for planet: " << m_name << std::endl;
 }
 
 void Planet::draw(GLint shaderProgram) {
     m_texture->bind();
-    m_geometryBuffer.bindVertexArray();
-    glDrawArrays(GL_TRIANGLES, 0, m_geometryBuffer.getVertexCount());
-    m_geometryBuffer.unbindVertexArray();
+    m_geometryBuffer.draw();
     m_texture->unbind();
 }
 

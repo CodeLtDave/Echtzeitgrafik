@@ -36,7 +36,7 @@ void Texture::setFiltering(GLenum minFilter, GLenum magFilter) {
 }
 
 void Texture::loadTexture(const std::filesystem::path& filePath) {
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
     unsigned char* data = stbi_load(filePath.string().c_str(), &m_width, &m_height, &m_channels, 0);
     if (data) {
         bind();

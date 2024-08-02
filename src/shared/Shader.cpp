@@ -6,6 +6,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include "data.h"
 
 #define INFOLOG_LEN 512
 
@@ -69,10 +70,10 @@ GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const 
 }
 
 void setUniforms(GLint shaderProgram) {
-
-    glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 15.0f, 15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+    glm::vec3 viewPos = glm::vec3(0.0f, 10.0f, 10.0f);
+    glm::mat4 view = glm::lookAt(viewPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
 
     GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
     GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
@@ -86,19 +87,17 @@ void setUniforms(GLint shaderProgram) {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    GLint objColorLoc = glGetUniformLocation(shaderProgram, "objColor");
     GLint lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
     GLint lightPosLoc = glGetUniformLocation(shaderProgram, "lightPos");
     GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
 
-    if (objColorLoc == -1 || lightColorLoc == -1 || lightPosLoc == -1 || viewPosLoc == -1) {
+    if (lightColorLoc == -1 || lightPosLoc == -1 || viewPosLoc == -1) {
         std::cerr << "Error: Uniform location not found" << std::endl;
     }
 
-    glUniform3f(objColorLoc, 1.0f, 0.5f, 0.31f);
     glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
     glUniform3f(lightPosLoc, 0.0f, 0.0f, 0.0f);
-    glUniform3f(viewPosLoc, 0.0f, 0.0f, 5.0f);
+    glUniform3f(viewPosLoc, viewPos.x, viewPos.y, viewPos.z);
 }
 
 
@@ -116,12 +115,12 @@ void swapPerspective(GLint shaderProgram) {
     glm::mat4 projection;
     if (projectionIsPerspective) {
 		projectionIsPerspective = false;
-        projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, 0.1f, 1000.0f);
+        projection = glm::ortho(-windowWidth/(2*100), windowWidth / (2 * 100), -windowHeight / (2 * 100), windowHeight / (2 * 100), 0.1f, 1000.0f);
         std::cout << "Projection changed to orthogonal" << std::endl;
     }
     else {
         projectionIsPerspective = true;
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
+        projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 1000.0f);
         std::cout << "Projection changed to perspective" << std::endl;
     }
 

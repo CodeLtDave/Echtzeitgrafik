@@ -14,12 +14,14 @@ public:
     GeometryBuffer(GeometryBuffer&& other) noexcept;  //move constructor
     GeometryBuffer& operator=(GeometryBuffer&& other) noexcept;   //move assignment operator
 
-    void bindAndUploadBufferData(GLsizeiptr size, const GLvoid* data, GLenum usage);  
+    void GeometryBuffer::bindAndUploadBufferData(GLsizeiptr vertexSize, const GLvoid* vertexData, GLsizeiptr indiceSize, const GLvoid* indiceData, GLenum usage);
     void bindVertexArray() const;
     void unbindVertexArray() const;
     GLuint getVao() const { return m_vao; }
     void GeometryBuffer::setupAttributes();
     GLsizei getVertexCount() const;
+
+    void draw();
 
     GLsizei m_vertexCount;
 
@@ -27,4 +29,5 @@ private:
     GLuint m_vao;
     GLuint m_vbo;
     GLuint m_ebo;
+    int indiceCount;
 };

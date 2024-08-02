@@ -4,6 +4,8 @@
 
 #include <GL/glew.h> 
 #include <GLFW/glfw3.h>
+#include "data.h"
+#include <stb_image.h>
 
 
 GLFWwindow* initAndCreateWindow(bool debugContext = false)
@@ -20,7 +22,7 @@ GLFWwindow* initAndCreateWindow(bool debugContext = false)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, debugContext);
-    window = glfwCreateWindow(800, 600, "Echtzeitgrafik", nullptr, nullptr);
+    window = glfwCreateWindow(windowWidth, windowHeight, "Echtzeitgrafik", nullptr, nullptr);
 
     // check if window was created successfully
     if (window == nullptr)

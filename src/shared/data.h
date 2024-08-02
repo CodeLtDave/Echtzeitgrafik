@@ -1,3 +1,5 @@
+#pragma once
+
 #include <filesystem>
 #include "helper/RootDir.h"
 
@@ -6,6 +8,9 @@ static const std::filesystem::path VERTEX_SHADER_PATH = root / "res" / "shader.v
 static const std::filesystem::path FRAGMENT_SHADER_PATH = root / "res" / "shader.frag";
 static const std::filesystem::path PLANET_TEXTURE_PATH = root / "res" / "textures";
 
+
+static const float windowWidth = 2000.;
+static const float windowHeight = 1000.;
 
 static const GLfloat triangle[] =
 {

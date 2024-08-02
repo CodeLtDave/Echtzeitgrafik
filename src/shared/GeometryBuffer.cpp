@@ -50,14 +50,18 @@ GeometryBuffer& GeometryBuffer::operator=(GeometryBuffer&& other) noexcept	//mov
     return *this;
 }
 
-void GeometryBuffer::bindAndUploadBufferData(GLsizeiptr size, const GLvoid* data, GLenum usage)
+void GeometryBuffer::bindAndUploadBufferData(GLsizeiptr vertexSize, const GLvoid* vertexData, GLsizeiptr indiceSize, const GLvoid* indiceData, GLenum usage)
 {
+    indiceCount = indiceSize / sizeof(GLuint);
+
     //bind vao and vbo
     bindVertexArray();
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 
     //upload data to vbo
-    glBufferData(GL_ARRAY_BUFFER, size, data, usage);
+    glBufferData(GL_ARRAY_BUFFER, vertexSize, vertexData, usage);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indiceSize, indiceData, usage);
 
     //unbind vao to avoid accidental changes
     unbindVertexArray();
@@ -77,20 +81,33 @@ void GeometryBuffer::unbindVertexArray() const
 
 void GeometryBuffer::setupAttributes() {
     bindVertexArray();
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
 
+
     unbindVertexArray();
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 
 GLsizei GeometryBuffer::getVertexCount() const
 {
 	return m_vertexCount;
+}
+
+void GeometryBuffer::draw() 
+{
+    setupAttributes();
+    bindVertexArray();
+
+    glDrawElements(GL_TRIANGLES, indiceCount, GL_UNSIGNED_INT, nullptr);
+    unbindVertexArray();
 }
