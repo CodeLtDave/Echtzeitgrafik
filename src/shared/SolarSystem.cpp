@@ -26,7 +26,8 @@ void SolarSystem::draw(GLint shaderProgram) {
         model = glm::translate(model, glm::vec3(planet.getDistanceToSun(), 0.0f, 0.0f));
 
         // Rotation around its own axis
-        model = glm::rotate(model, time * glm::radians(planet.getRotationSpeed()), glm::vec3(0.0f, 1.0f, 0.0f));
+        float rotationSpeedInRadiansPerSecond = glm::radians(360.0f / (planet.getRotationSpeed() * 60.0f));
+        model = glm::rotate(model, time * rotationSpeedInRadiansPerSecond, glm::vec3(0.0f, 1.0f, 0.0f));
 
         if (planet.getName() == "Sonne") {
             glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 1.0f, 1.0f, 0.0f); // Yellow emission
