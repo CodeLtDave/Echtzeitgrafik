@@ -1,9 +1,10 @@
 #include "Texture.hpp"
 #include <stb_image.h>
 #include <iostream>
+#include <stdexcept>
 
 Texture::Texture(const std::filesystem::path& filePath)
-    : m_target(GL_TEXTURE_2D) {
+    : m_target(GL_TEXTURE_2D), m_textureID(0), m_width(0), m_height(0), m_channels(0) {
     glGenTextures(1, &m_textureID);
     loadTexture(filePath);
 }
@@ -38,14 +39,14 @@ void Texture::setFiltering(GLenum minFilter, GLenum magFilter) {
 void Texture::loadTexture(const std::filesystem::path& filePath) {
     stbi_set_flip_vertically_on_load(false);
     unsigned char* data = stbi_load(filePath.string().c_str(), &m_width, &m_height, &m_channels, 0);
-    if (data) {
-        bind();
-        glTexImage2D(m_target, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(m_target);
-        unbind();
-        stbi_image_free(data);
+    if (!data) {
+        throw std::runtime_error("Failed to load texture: " + filePath.string());
     }
-    else {
-        std::cerr << "Failed to load texture: " << filePath << std::endl;
-    }
+
+    bind();
+    GLenum format = (m_channels == 4) ? GL_RGBA : GL_RGB;
+    glTexImage2D(m_target, 0, format, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(m_target);
+    unbind();
+    stbi_image_free(data);
 }
