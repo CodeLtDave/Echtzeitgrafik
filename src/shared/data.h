@@ -4,6 +4,7 @@
 static const std::filesystem::path root = std::filesystem::path(ROOT_DIR);
 static const std::filesystem::path VERTEX_SHADER_PATH = root / "res" / "shader.vert";
 static const std::filesystem::path FRAGMENT_SHADER_PATH = root / "res" / "shader.frag";
+static const std::filesystem::path PLANET_TEXTURE_PATH = root / "res" / "textures";
 
 
 static const GLfloat triangle[] =

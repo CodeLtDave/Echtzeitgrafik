@@ -1,15 +1,16 @@
 #version 330 core
 in vec3 fragColor;
-in vec3 fragNormal; // Neue Zeile für Normalen
-in vec3 fragPos; // Neue Zeile für Fragmentposition
+in vec3 fragNormal;
+in vec3 fragPos;
+in vec2 fragTexCoords; 
 
 out vec4 color;
 
-uniform vec3 lightPos; // Position des Lichts
-uniform vec3 viewPos; // Position der Kamera
-uniform vec3 lightColor; // Farbe des Lichts
-uniform vec3 objColor; // Farbe des Objekts
+uniform vec3 lightPos;
+uniform vec3 viewPos;
+uniform vec3 lightColor;
 uniform vec3 emission;
+uniform sampler2D texture1; 
 
 void main()
 {
@@ -24,12 +25,15 @@ void main()
     vec3 diffuse = diff * lightColor;
 
     // Specular
-    float specularStrength = 0.5;
+    float specularStrength = 1.;
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 result = (ambient + diffuse + specular + emission) * objColor;
+    // Texturfarbe
+    vec3 textureColor = texture(texture1, fragTexCoords).rgb;
+
+    vec3 result = (ambient + diffuse + specular + emission) * textureColor;
     color = vec4(result, 1.0);
 }

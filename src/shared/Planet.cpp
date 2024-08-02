@@ -3,9 +3,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <iostream>
+#include "data.h"
 
 Planet::Planet(const std::string& name, float rotationSpeed, float orbitSpeed, float distanceToSun, float size)
-    : m_name(name), m_rotationSpeed(rotationSpeed), m_orbitSpeed(orbitSpeed), m_distanceToSun(distanceToSun), m_size(size) {}
+    : m_name(name), m_rotationSpeed(rotationSpeed), m_orbitSpeed(orbitSpeed), m_distanceToSun(distanceToSun), m_size(size), m_texture(nullptr) {}
 
 void Planet::loadMesh(const std::filesystem::path& meshPath) {
     Assimp::Importer importer;
@@ -25,18 +26,29 @@ void Planet::loadMesh(const std::filesystem::path& meshPath) {
         vertices.push_back(mesh->mNormals[i].x);
         vertices.push_back(mesh->mNormals[i].y);
         vertices.push_back(mesh->mNormals[i].z);
+        if (mesh->mTextureCoords[0]) {
+            vertices.push_back(mesh->mTextureCoords[0][i].x);
+            vertices.push_back(mesh->mTextureCoords[0][i].y);
+        }
+        else {
+            vertices.push_back(0.0f);
+            vertices.push_back(0.0f);
+        }
     }
 
+    std::filesystem::path texturePath = PLANET_TEXTURE_PATH / ("2k_" + m_name + ".jpg");
+    m_texture = new Texture(texturePath);
     m_geometryBuffer.bindAndUploadBufferData(vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
     m_geometryBuffer.setupAttributes();
-
     std::cout << "Mesh loaded for planet: " << m_name << std::endl;
 }
 
 void Planet::draw(GLint shaderProgram) {
+    m_texture->bind();
     m_geometryBuffer.bindVertexArray();
     glDrawArrays(GL_TRIANGLES, 0, m_geometryBuffer.getVertexCount());
     m_geometryBuffer.unbindVertexArray();
+    m_texture->unbind();
 }
 
 const std::string& Planet::getName() const { return m_name; }

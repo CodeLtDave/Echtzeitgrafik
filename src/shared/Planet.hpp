@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include "GeometryBuffer.hpp"
 #include <filesystem>
+#include "Texture.hpp"
 
 class Planet {
 public:
@@ -26,6 +27,7 @@ private:
     float m_orbitSpeed;
     float m_distanceToSun;
     float m_size;
+    Texture* m_texture;
 };
 
 #endif // PLANET_HPP
