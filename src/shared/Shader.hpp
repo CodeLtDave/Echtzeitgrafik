@@ -12,13 +12,10 @@ public:
 	Shader(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
 	void createShaderProgram(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
 	std::string readShaderSource(const std::filesystem::path& shaderPath);
-	void setUniforms(GLint shaderProgram);
-
 
 	GLint getLocation(const char* uniformName);
 	void setUniform(GLint location, glm::mat4 matrix);
 	void setUniform(GLint location, glm::vec3 value);
-
 
 private:
 	GLint m_shaderProgram;

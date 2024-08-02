@@ -12,8 +12,7 @@
 
 Shader::Shader()
     : m_shaderProgram(0)
-{
-}
+{}
 
 Shader::Shader(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath)
 {
@@ -76,22 +75,6 @@ std::string Shader::readShaderSource(const std::filesystem::path& shaderPath)
     std::string shaderSource((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
     return shaderSource;
 }
-
-
-
-//void Shader::setUniforms(GLint shaderProgram) {
-//    GLint lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
-//    GLint lightPosLoc = glGetUniformLocation(shaderProgram, "lightPos");
-//    GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
-//
-//    if (lightColorLoc == -1 || lightPosLoc == -1 || viewPosLoc == -1) {
-//        std::cerr << "Error: Uniform location not found" << std::endl;
-//    }
-//
-//    glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
-//    glUniform3f(lightPosLoc, 0.0f, 0.0f, 0.0f);
-//    glUniform3f(viewPosLoc, viewPos.x, viewPos.y, viewPos.z);
-//}
 
 GLint Shader::getLocation(const char* uniformName) {
     GLint location = glGetUniformLocation(m_shaderProgram, uniformName);
