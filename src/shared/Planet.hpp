@@ -18,6 +18,7 @@ public:
     float getOrbitSpeed() const;
     float getDistanceToSun() const;
     float getSize() const;
+    GeometryBuffer m_geometryBuffer;
 
 private:
     std::string m_name;
@@ -25,7 +26,6 @@ private:
     float m_orbitSpeed;
     float m_distanceToSun;
     float m_size;
-    GeometryBuffer m_geometryBuffer;
 };
 
 #endif // PLANET_HPP

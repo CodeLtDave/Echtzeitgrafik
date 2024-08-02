@@ -96,7 +96,7 @@ void setUniforms(GLint shaderProgram) {
 
     glUniform3f(objColorLoc, 1.0f, 0.5f, 0.31f);
     glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
-    glUniform3f(lightPosLoc, 1.2f, 1.0f, 2.0f);
+    glUniform3f(lightPosLoc, 0.0f, 0.0f, 0.0f);
     glUniform3f(viewPosLoc, 0.0f, 0.0f, 5.0f);
 }
 
