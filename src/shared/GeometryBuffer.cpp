@@ -19,7 +19,7 @@ GeometryBuffer::~GeometryBuffer()   //destructor
 
 GeometryBuffer::GeometryBuffer(GeometryBuffer&& other) noexcept     //move constructor
     //copy the vao, vbo and ebo from other to this
-    : m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo)
+    : m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo), indiceCount(other.indiceCount)
 {
     //set other vao, vbo and ebo to 0 to avoid double deletion
     other.m_vao = 0;
@@ -101,7 +101,6 @@ void GeometryBuffer::setupAttributes() {
 
 void GeometryBuffer::draw() 
 {
-    setupAttributes();
     bindVertexArray();
 
     glDrawElements(GL_TRIANGLES, indiceCount, GL_UNSIGNED_INT, nullptr);

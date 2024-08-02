@@ -13,7 +13,7 @@ public:
     Texture(Texture&& other) noexcept; // Move-Konstruktor
     Texture& operator=(Texture&& other) noexcept; // Move-Zuweisungsoperator
 
-    void bind(GLenum textureUnit) const;
+    void bind(GLenum textureUnit = GL_TEXTURE0) const;
     void unbind() const;
     void setWrapping(GLenum s, GLenum t);
     void setFiltering(GLenum minFilter, GLenum magFilter);

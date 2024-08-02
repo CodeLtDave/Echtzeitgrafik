@@ -4,9 +4,9 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include "planetData.h"
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
+#include "Shader.hpp"
+#include "matrixData.h"
 
 
 SolarSystem::SolarSystem() {
@@ -16,7 +16,7 @@ SolarSystem::SolarSystem() {
 SolarSystem::~SolarSystem() {}
 
 
-void SolarSystem::draw(GLint shaderProgram) {
+void SolarSystem::draw(Shader shader) {
     float time = 0.5f * glfwGetTime();
     for (auto& planet : m_planets) {
         // Rotation around the sun
@@ -28,15 +28,17 @@ void SolarSystem::draw(GLint shaderProgram) {
         // Rotation around its own axis
         model = glm::rotate(model, time * glm::radians(500000/planet.getRotationSpeed()), glm::vec3(0.0f, 1.0f, 0.0f));
 
+
+        GLint emissionLoc = shader.getLocation("emission");
         if (planet.getName() == "sun") {
-            glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 1.0f, 1.0f, 1.0f);
+            shader.setUniform(emissionLoc, emissionSunVec);
         }
         else {
-            glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 0.0f, 0.0f, 0.0f);
+            shader.setUniform(emissionLoc, emissionPlanetVec);
         }
-
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        planet.draw(shaderProgram);
+        GLint modelLoc = shader.getLocation("model");
+        shader.setUniform(modelLoc, model);
+        planet.draw();
     }
 }
 

@@ -13,7 +13,7 @@ public:
 
     void loadMesh(const std::filesystem::path& meshPath);
     void loadTexture();
-    void draw(GLint shaderProgram);
+    void draw();
 
     const std::string& getName() const;
     float getRotationSpeed() const;

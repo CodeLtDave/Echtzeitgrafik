@@ -1,4 +1,5 @@
 #include "PointLight.hpp"
+#include "Shader.hpp"
 
 PointLight::PointLight(const glm::vec3& position, const glm::vec3& color)
     : m_position(position), m_color(color) {}
@@ -11,10 +12,10 @@ void PointLight::setColor(const glm::vec3& color) {
     m_color = color;
 }
 
-void PointLight::apply(GLint shaderProgram) {
-    GLint lightPosLoc = glGetUniformLocation(shaderProgram, "lightPos");
-    GLint lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
+void PointLight::apply(Shader shader) {
+    GLint lightPosLoc = shader.getLocation("lightPos");
+    GLint lightColorLoc = shader.getLocation("lightColor");
 
-    glUniform3f(lightPosLoc, m_position.x, m_position.y, m_position.z);
-    glUniform3f(lightColorLoc, m_color.r, m_color.g, m_color.b);
+    shader.setUniform(lightPosLoc, m_position);
+    shader.setUniform(lightColorLoc, m_color);
 }

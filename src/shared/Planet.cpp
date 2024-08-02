@@ -4,6 +4,7 @@
 #include <assimp/postprocess.h>
 #include <iostream>
 #include "data.h"
+#include "Shader.hpp"
 
 Planet::Planet(const std::string& name, float rotationSpeed, float orbitSpeed, float distanceToSun, float size)
     : m_name(name), m_rotationSpeed(rotationSpeed), m_orbitSpeed(orbitSpeed), m_distanceToSun(distanceToSun), m_size(size), m_texture(nullptr) {}
@@ -57,7 +58,7 @@ void Planet::loadTexture() {
     std::cout << "Texture loaded for planet: " << m_name << std::endl;
 }
 
-void Planet::draw(GLint shaderProgram) {
+void Planet::draw() {
     m_texture->bind();
     m_geometryBuffer.draw();
     m_texture->unbind();

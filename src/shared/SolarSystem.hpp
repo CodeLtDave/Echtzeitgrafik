@@ -4,13 +4,14 @@
 #include <vector>
 #include <filesystem>
 #include "Planet.hpp"
+#include "Shader.hpp"
 
 class SolarSystem {
 public:
     SolarSystem();
     ~SolarSystem();
 
-    void draw(GLint shaderProgram);
+    void draw(Shader shader);
     void loadPlanets();
 
 private:
@@ -18,4 +19,4 @@ private:
     GeometryBuffer m_geometryBuffer;
 };
 
-#endif // SOLARSYSTEM_HPP
+#endif

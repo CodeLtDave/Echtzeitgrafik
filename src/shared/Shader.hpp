@@ -1,22 +1,25 @@
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#pragma once
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <filesystem>
+#include <string>
 
-static bool projectionIsPerspective = true;
 
-std::string readShaderSource(const std::filesystem::path& shaderPath);
-GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
-void setUniforms(GLint shaderProgram);	
-void setContinousUniforms(GLint shaderProgram);
-void swapPerspective(GLint shaderProgram);
+class Shader {
+public:
+	Shader();
+	Shader(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
+	void createShaderProgram(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
+	std::string readShaderSource(const std::filesystem::path& shaderPath);
+	void setUniforms(GLint shaderProgram);
 
-void setUniform(GLint location, int value);
-void setUniform(GLint location, float value);
-void setUniform(GLint location, glm::vec3 value);
-void setUniform(GLint location, glm::vec4 value);
-void setUniform(GLint location, glm::mat4 value);
 
-#endif
+	GLint getLocation(const char* uniformName);
+	void setUniform(GLint location, glm::mat4 matrix);
+	void setUniform(GLint location, glm::vec3 value);
+
+
+private:
+	GLint m_shaderProgram;
+};

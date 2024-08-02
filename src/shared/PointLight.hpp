@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+#include "Shader.hpp"
 
 class PointLight {
 public:
@@ -11,7 +12,7 @@ public:
     void setPosition(const glm::vec3& position);
     void setColor(const glm::vec3& color);
 
-    void apply(GLint shaderProgram);
+    void apply(Shader shader);
 
 private:
     glm::vec3 m_position;

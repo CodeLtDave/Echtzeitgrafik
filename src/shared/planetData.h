@@ -2,7 +2,7 @@
 
 static const std::filesystem::path SPHERE_PATH = root / "res" / "sphere.obj";
 
-static struct PlanetData {
+struct PlanetData {
     std::string name;
     float rotationSpeed; // in Minuten
     float orbitSpeed; // in km/s

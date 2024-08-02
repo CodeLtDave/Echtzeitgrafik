@@ -10,15 +10,18 @@
 
 #define INFOLOG_LEN 512
 
-std::string readShaderSource(const std::filesystem::path& shaderPath)
+Shader::Shader()
+    : m_shaderProgram(0)
 {
-    std::ifstream shaderFile(shaderPath);
-    std::string shaderSource((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
-    return shaderSource;
 }
 
-GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath)
+Shader::Shader(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath)
 {
+    createShaderProgram(vertexShaderPath, fragmentShaderPath);
+    glUseProgram(m_shaderProgram);
+}
+
+void Shader::createShaderProgram(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath) {
     /* Read vertex shader source */
     std::string vertexSource = readShaderSource(vertexShaderPath);
     const char* vertexSourcePtr = vertexSource.c_str();
@@ -52,78 +55,57 @@ GLint createShaderPipeline(const std::filesystem::path& vertexShaderPath, const 
     }
 
     /* Link shaders */
-    GLint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    m_shaderProgram = glCreateProgram();
+    glAttachShader(m_shaderProgram, vertexShader);
+    glAttachShader(m_shaderProgram, fragmentShader);
+    glLinkProgram(m_shaderProgram);
+    glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
     if (!success)
     {
-        glGetProgramInfoLog(shaderProgram, INFOLOG_LEN, NULL, infoLog);
+        glGetProgramInfoLog(m_shaderProgram, INFOLOG_LEN, NULL, infoLog);
         printf("Shader linking failed\n%s\n", infoLog);
     }
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
-    return shaderProgram;
 }
 
-void setUniforms(GLint shaderProgram) {
-    glm::vec3 viewPos = glm::vec3(0.0f, 10.0f, 10.0f);
-    glm::mat4 view = glm::lookAt(viewPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
-
-    GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
-    GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
-    GLint projLoc = glGetUniformLocation(shaderProgram, "projection");
-
-    if (modelLoc == -1 || viewLoc == -1 || projLoc == -1) {
-        std::cerr << "Error: Uniform location not found" << std::endl;
-    }
-
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-    GLint lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
-    GLint lightPosLoc = glGetUniformLocation(shaderProgram, "lightPos");
-    GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
-
-    if (lightColorLoc == -1 || lightPosLoc == -1 || viewPosLoc == -1) {
-        std::cerr << "Error: Uniform location not found" << std::endl;
-    }
-
-    glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
-    glUniform3f(lightPosLoc, 0.0f, 0.0f, 0.0f);
-    glUniform3f(viewPosLoc, viewPos.x, viewPos.y, viewPos.z);
-}
-
-
-void setContinousUniforms(GLint shaderProgram)
+std::string Shader::readShaderSource(const std::filesystem::path& shaderPath)
 {
-    glm::mat4 model = glm::mat4(1.0f);
-
-    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-
-    int modelLoc = glGetUniformLocation(shaderProgram, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    std::ifstream shaderFile(shaderPath);
+    std::string shaderSource((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
+    return shaderSource;
 }
 
-void swapPerspective(GLint shaderProgram) {
-    glm::mat4 projection;
-    if (projectionIsPerspective) {
-		projectionIsPerspective = false;
-        projection = glm::ortho(-windowWidth/(2*100), windowWidth / (2 * 100), -windowHeight / (2 * 100), windowHeight / (2 * 100), 0.1f, 1000.0f);
-        std::cout << "Projection changed to orthogonal" << std::endl;
-    }
-    else {
-        projectionIsPerspective = true;
-        projection = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 1000.0f);
-        std::cout << "Projection changed to perspective" << std::endl;
-    }
 
-    int perspectiveLoc = glGetUniformLocation(shaderProgram, "projection");
-    glUniformMatrix4fv(perspectiveLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+//void Shader::setUniforms(GLint shaderProgram) {
+//    GLint lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
+//    GLint lightPosLoc = glGetUniformLocation(shaderProgram, "lightPos");
+//    GLint viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
+//
+//    if (lightColorLoc == -1 || lightPosLoc == -1 || viewPosLoc == -1) {
+//        std::cerr << "Error: Uniform location not found" << std::endl;
+//    }
+//
+//    glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+//    glUniform3f(lightPosLoc, 0.0f, 0.0f, 0.0f);
+//    glUniform3f(viewPosLoc, viewPos.x, viewPos.y, viewPos.z);
+//}
+
+GLint Shader::getLocation(const char* uniformName) {
+    GLint location = glGetUniformLocation(m_shaderProgram, uniformName);
+    if (location == -1) {
+		std::cerr << "Error: " << uniformName << "not found" << std::endl;
+	}
+    return location;
 }
+
+void Shader::setUniform(GLint location, glm::mat4 matrix) {
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Shader::setUniform(GLint location, glm::vec3 value) {
+	glUniform3f(location, value.x, value.y, value.z);
+}
+

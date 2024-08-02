@@ -14,13 +14,17 @@
 #include "shared/GeometryBuffer.hpp"
 #include "shared/PointLight.hpp"
 #include "shared/SolarSystem.hpp"
+#include <shared/matrixData.h>
+#include <glm/ext/matrix_clip_space.hpp>
 
 class SolarSystemSimulation {
 public:
     SolarSystemSimulation() {
         std::cout << "Hello SolarSystemSimulation!" << std::endl;
         window = initAndCreateWindow();
-        shaderProgram = createShaderPipeline(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
+        shader = new Shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
+
+        projectionIsPerspective = true;
         glfwSetWindowUserPointer(window, this);
         glfwSetKeyCallback(window, SolarSystemSimulation::spaceBarPressed);
 
@@ -35,25 +39,27 @@ public:
     void run() {
         glViewport(0, 0, windowWidth, windowHeight);
 
-        glUseProgram(shaderProgram);
-
         // Create and Initialize Point Light
         PointLight pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-        pointLight.apply(shaderProgram);
+        pointLight.apply(*shader);
 
-        setUniforms(shaderProgram);
+        GLint modelLoc = shader->getLocation("model");
+        shader->setUniform(modelLoc, modelMatrix);
+        GLint viewLoc = shader->getLocation("view");
+        shader->setUniform(viewLoc, viewMatrix);
+        GLint projLoc = shader->getLocation("projection");
+        shader->setUniform(projLoc, projectionMatrix);
 
         glEnable(GL_DEPTH_TEST);
 
         while (glfwWindowShouldClose(window) == 0) {
-            //setContinousUniforms(shaderProgram);
 
             // clear the window
             glClearColor(0.0f, 0.1f, 0.2f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             // Zeichne die Planeten
-            solarSystem->draw(shaderProgram);
+            solarSystem->draw(*shader);
 
             // swap buffer
             glfwSwapBuffers(window);
@@ -74,18 +80,33 @@ public:
 
 private:
     GLFWwindow* window;
-    GLint shaderProgram;
+    Shader* shader;
     SolarSystem* solarSystem;
+    bool projectionIsPerspective;
 
     static void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
             SolarSystemSimulation* simulation = static_cast<SolarSystemSimulation*>(glfwGetWindowUserPointer(window));
             if (simulation) {
-                std::cout << "Space Bar Pressed" << std::endl;
-                swapPerspective(simulation->shaderProgram);
+                simulation->swapPerspective();
             }
         }
     }
+
+    void swapPerspective() {
+        if (projectionIsPerspective) {
+            std::cout << "Orthogonal Projection" << std::endl;
+            projectionIsPerspective = false;
+            projectionMatrix = glm::ortho(-windowWidth / (2 * 100), windowWidth / (2 * 100), -windowHeight / (2 * 100), windowHeight / (2 * 100), 0.1f, 1000.0f);
+        }
+        else {
+            std::cout << "Perspective Projection" << std::endl;
+            projectionIsPerspective = true;
+            projectionMatrix = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 1000.0f);
+        }
+        GLint projLoc = shader->getLocation("projection");
+        shader->setUniform(projLoc, projectionMatrix);
+	}
 };
 
 int main(int argc, char** argv)
