@@ -12,6 +12,7 @@ public:
     Planet(const std::string& name, float rotationSpeed, float orbitSpeed, float distanceToSun, float size);
 
     void loadMesh(const std::filesystem::path& meshPath);
+    void loadTexture();
     void draw(GLint shaderProgram);
 
     const std::string& getName() const;
@@ -19,7 +20,6 @@ public:
     float getOrbitSpeed() const;
     float getDistanceToSun() const;
     float getSize() const;
-    GeometryBuffer m_geometryBuffer;
 
 private:
     std::string m_name;
@@ -28,6 +28,7 @@ private:
     float m_distanceToSun;
     float m_size;
     Texture* m_texture;
+    GeometryBuffer m_geometryBuffer;
 };
 
-#endif // PLANET_HPP
+#endif

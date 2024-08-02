@@ -45,13 +45,16 @@ void Planet::loadMesh(const std::filesystem::path& meshPath) {
 			indices.push_back(face.mIndices[j]);
 		}
 	}
-
-
-    std::filesystem::path texturePath = PLANET_TEXTURE_PATH / ("2k_" + m_name + ".jpg");
-    m_texture = new Texture(texturePath);
+    
     m_geometryBuffer.bindAndUploadBufferData(vertices.size() * sizeof(float), vertices.data(), indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
     m_geometryBuffer.setupAttributes();
     std::cout << "Mesh loaded for planet: " << m_name << std::endl;
+}
+
+void Planet::loadTexture() {
+    std::filesystem::path texturePath = PLANET_TEXTURE_PATH / ("2k_" + m_name + ".jpg");
+    m_texture = new Texture(texturePath);
+    std::cout << "Texture loaded for planet: " << m_name << std::endl;
 }
 
 void Planet::draw(GLint shaderProgram) {

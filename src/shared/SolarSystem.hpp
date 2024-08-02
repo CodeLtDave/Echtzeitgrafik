@@ -10,12 +10,10 @@ public:
     SolarSystem();
     ~SolarSystem();
 
-    void loadSphere(const std::filesystem::path& spherePath);
     void draw(GLint shaderProgram);
     void loadPlanets();
 
 private:
-
     std::vector<Planet> m_planets;
     GeometryBuffer m_geometryBuffer;
 };

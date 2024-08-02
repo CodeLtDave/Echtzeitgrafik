@@ -29,10 +29,10 @@ void SolarSystem::draw(GLint shaderProgram) {
         model = glm::rotate(model, time * glm::radians(500000/planet.getRotationSpeed()), glm::vec3(0.0f, 1.0f, 0.0f));
 
         if (planet.getName() == "sun") {
-            glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 1.0f, 1.0f, 1.0f); // Yellow emission
+            glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 1.0f, 1.0f, 1.0f);
         }
         else {
-            glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 0.0f, 0.0f, 0.0f); // No emission
+            glUniform3f(glGetUniformLocation(shaderProgram, "emission"), 0.0f, 0.0f, 0.0f);
         }
 
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -46,6 +46,7 @@ void SolarSystem::loadPlanets() {
     }
 
     for (auto& planet : m_planets) {
+        planet.loadTexture();
         planet.loadMesh(SPHERE_PATH); // Pfad zum Mesh anpassen
     }
 }

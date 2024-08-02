@@ -1,7 +1,7 @@
 #include "GeometryBuffer.hpp"
 
 GeometryBuffer::GeometryBuffer()    //default contructor
-    : m_vertexCount(0)
+    : indiceCount(0)
 {
     //set vao, vbo and ebo to 1
     glGenVertexArrays(1, &m_vao);
@@ -19,7 +19,7 @@ GeometryBuffer::~GeometryBuffer()   //destructor
 
 GeometryBuffer::GeometryBuffer(GeometryBuffer&& other) noexcept     //move constructor
     //copy the vao, vbo and ebo from other to this
-    : m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo), m_vertexCount(0)
+    : m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo)
 {
     //set other vao, vbo and ebo to 0 to avoid double deletion
     other.m_vao = 0;
@@ -98,10 +98,6 @@ void GeometryBuffer::setupAttributes() {
 }
 
 
-GLsizei GeometryBuffer::getVertexCount() const
-{
-	return m_vertexCount;
-}
 
 void GeometryBuffer::draw() 
 {
