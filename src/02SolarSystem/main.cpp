@@ -16,6 +16,7 @@
 #include "shared/SolarSystem.hpp"
 #include <shared/matrixData.h>
 #include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 class SolarSystemSimulation {
 public:
@@ -67,6 +68,7 @@ private:
     Shader* shader;
     SolarSystem* solarSystem;
     bool projectionIsPerspective = true;
+    const float moveSpeed = 0.5f;
 
     void initializeScene()
     {
@@ -75,7 +77,7 @@ private:
 
         // Set callback functions for keyboard ("space") input
         glfwSetWindowUserPointer(window, this);
-        glfwSetKeyCallback(window, SolarSystemSimulation::spaceBarPressed);
+        glfwSetKeyCallback(window, SolarSystemSimulation::keyCallback);
 
         // Create and Initialize Point Light
         PointLight pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -110,11 +112,52 @@ private:
         shader->setUniform(projLoc, projectionMatrix);
 	}
 
-    static void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-            SolarSystemSimulation* simulation = static_cast<SolarSystemSimulation*>(glfwGetWindowUserPointer(window));
-            if (simulation) {
+    void adjustViewPos(int mult, char axis) {
+        if (axis == 'z') {
+            viewPosVec.z += moveSpeed * mult;
+        }
+        else if (axis == 'y') {
+            viewPosVec.y += moveSpeed * mult;
+        }
+        else if (axis == 'x') {
+            viewPosVec.x += moveSpeed * mult;
+        }
+        viewMatrix = glm::lookAt(viewPosVec, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        GLint viewLoc = shader->getLocation("view");
+        shader->setUniform(viewLoc, viewMatrix);
+        std::cout << "viewPos adjusted: " << glm::to_string(viewPosVec) << std::endl;
+    }
+
+
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        SolarSystemSimulation* simulation = static_cast<SolarSystemSimulation*>(glfwGetWindowUserPointer(window));
+        if (simulation) {
+            if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+                std::cout << "Space Bar Pressed" << std::endl;
                 simulation->swapPerspective();
+            }
+            else if ((key == GLFW_KEY_W || key == GLFW_KEY_S || key == GLFW_KEY_A || key == GLFW_KEY_D || key == GLFW_KEY_Q || key == GLFW_KEY_E) &&
+                (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+                switch (key) {
+                case GLFW_KEY_W:
+                    simulation->adjustViewPos(1, 'y');
+                    break;
+                case GLFW_KEY_S:
+                    simulation->adjustViewPos(-1, 'y');
+                    break;
+                case GLFW_KEY_A:
+                    simulation->adjustViewPos(1, 'x');
+                    break;
+                case GLFW_KEY_D:
+                    simulation->adjustViewPos(-1, 'x');
+                    break;
+                case GLFW_KEY_Q:
+                    simulation->adjustViewPos(1, 'z');
+                    break;
+                case GLFW_KEY_E:
+                    simulation->adjustViewPos(-1, 'z');
+                    break;
+                }
             }
         }
     }
