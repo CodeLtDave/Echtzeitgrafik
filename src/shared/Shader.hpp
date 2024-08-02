@@ -9,6 +9,7 @@
 class Shader {
 public:
 	Shader();
+	~Shader();
 	Shader(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
 	void createShaderProgram(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath);
 	std::string readShaderSource(const std::filesystem::path& shaderPath);

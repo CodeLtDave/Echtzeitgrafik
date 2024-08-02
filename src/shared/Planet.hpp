@@ -10,6 +10,11 @@
 class Planet {
 public:
     Planet(const std::string& name, float rotationSpeed, float orbitSpeed, float distanceToSun, float size);
+    Planet(const Planet& other);
+    Planet(Planet&& other) noexcept;
+    Planet& operator=(const Planet& other);
+    Planet& operator=(Planet&& other) noexcept;
+    ~Planet();
 
     void loadMesh(const std::filesystem::path& meshPath);
     void loadTexture();

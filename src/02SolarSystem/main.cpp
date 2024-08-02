@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory> // F�r std::unique_ptr
 
 #define GLEW_STATIC
 #include <GL/glew.h> // has to be included first!
@@ -23,15 +24,14 @@ public:
         std::cout << "Hello SolarSystemSimulation!" << std::endl;
 
         window = initAndCreateWindow();
-        shader = new Shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
-        solarSystem = new SolarSystem();
+        shader = std::make_unique<Shader>(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
+        solarSystem = std::make_unique<SolarSystem>();
 
         initializeScene();
     }
 
     ~SolarSystemSimulation() {
-        delete shader;
-        delete solarSystem;
+        glfwDestroyWindow(window);
     }
 
     void run() {
@@ -60,16 +60,13 @@ public:
         glfwTerminate();
     }
 
-
-
 private:
     GLFWwindow* window;
-    Shader* shader;
-    SolarSystem* solarSystem;
+    std::unique_ptr<Shader> shader;
+    std::unique_ptr<SolarSystem> solarSystem;
     bool projectionIsPerspective = true;
 
-    void initializeScene()
-    {
+    void initializeScene() {
         // Set the viewport
         glViewport(0, 0, windowWidth, windowHeight);
 
@@ -100,15 +97,14 @@ private:
             std::cout << "Orthogonal Projection" << std::endl;
             projectionIsPerspective = false;
             projectionMatrix = glm::ortho(-windowWidth / (2 * 100), windowWidth / (2 * 100), -windowHeight / (2 * 100), windowHeight / (2 * 100), 0.1f, 1000.0f);
-        }
-        else {
+        } else {
             std::cout << "Perspective Projection" << std::endl;
             projectionIsPerspective = true;
             projectionMatrix = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 1000.0f);
         }
         GLint projLoc = shader->getLocation("projection");
         shader->setUniform(projLoc, projectionMatrix);
-	}
+    }
 
     static void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
@@ -120,12 +116,10 @@ private:
     }
 };
 
-int main(int argc, char** argv)
-{    
+int main(int argc, char** argv) {    
     // Aktiviere Speicherleck-Erkennung
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
- 
     SolarSystemSimulation simulation;
     simulation.run();
 

@@ -14,6 +14,13 @@ Shader::Shader()
     : m_shaderProgram(0)
 {}
 
+Shader::~Shader() {
+    if (m_shaderProgram != 0) {
+        glDeleteProgram(m_shaderProgram);
+    }
+}
+
+
 Shader::Shader(const std::filesystem::path& vertexShaderPath, const std::filesystem::path& fragmentShaderPath)
 {
     createShaderProgram(vertexShaderPath, fragmentShaderPath);

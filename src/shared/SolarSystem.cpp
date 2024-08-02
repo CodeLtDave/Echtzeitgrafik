@@ -8,13 +8,33 @@
 #include "Shader.hpp"
 #include "matrixData.h"
 
-
 SolarSystem::SolarSystem() {
     loadPlanets();
 }
 
-SolarSystem::~SolarSystem() {}
+SolarSystem::~SolarSystem() {
+    m_planets.clear();
+}
 
+// Rule of Five: Copy Constructor
+SolarSystem::SolarSystem(const SolarSystem& other) : m_planets(other.m_planets) {}
+
+// Rule of Five: Copy Assignment Operator
+SolarSystem& SolarSystem::operator=(const SolarSystem& other) {
+    if (this == &other) return *this;
+    m_planets = other.m_planets;
+    return *this;
+}
+
+// Rule of Five: Move Constructor
+SolarSystem::SolarSystem(SolarSystem&& other) noexcept : m_planets(std::move(other.m_planets)) {}
+
+// Rule of Five: Move Assignment Operator
+SolarSystem& SolarSystem::operator=(SolarSystem&& other) noexcept {
+    if (this == &other) return *this;
+    m_planets = std::move(other.m_planets);
+    return *this;
+}
 
 void SolarSystem::draw(Shader shader) {
     float time = 0.5f * glfwGetTime();
@@ -27,7 +47,6 @@ void SolarSystem::draw(Shader shader) {
 
         // Rotation around its own axis
         model = glm::rotate(model, time * glm::radians(500000/planet.getRotationSpeed()), glm::vec3(0.0f, 1.0f, 0.0f));
-
 
         GLint emissionLoc = shader.getLocation("emission");
         if (planet.getName() == "sun") {

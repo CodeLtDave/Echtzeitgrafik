@@ -11,6 +11,14 @@ public:
     SolarSystem();
     ~SolarSystem();
 
+    SolarSystem(const SolarSystem& other);
+
+    SolarSystem& operator=(const SolarSystem& other);
+
+    SolarSystem(SolarSystem&& other) noexcept;
+
+    SolarSystem& operator=(SolarSystem&& other) noexcept;
+
     void draw(Shader shader);
     void loadPlanets();
 

@@ -9,8 +9,64 @@
 Planet::Planet(const std::string& name, float rotationSpeed, float orbitSpeed, float distanceToSun, float size)
     : m_name(name), m_rotationSpeed(rotationSpeed), m_orbitSpeed(orbitSpeed), m_distanceToSun(distanceToSun), m_size(size), m_texture(nullptr) {}
 
-void Planet::loadMesh(const std::filesystem::path& meshPath) {
+Planet::Planet(const Planet& other)
+    : m_name(other.m_name), m_rotationSpeed(other.m_rotationSpeed), m_orbitSpeed(other.m_orbitSpeed), m_distanceToSun(other.m_distanceToSun), m_size(other.m_size), m_texture(nullptr)
+{
+}
 
+Planet::Planet(Planet&& other) noexcept
+    : m_name(std::move(other.m_name)), m_rotationSpeed(other.m_rotationSpeed), m_orbitSpeed(other.m_orbitSpeed), m_distanceToSun(other.m_distanceToSun), m_size(other.m_size), m_texture(other.m_texture)
+{
+    other.m_texture = nullptr;
+}
+
+Planet& Planet::operator=(const Planet& other)
+{
+    if (this == &other) {
+        return *this;
+    }
+
+    m_name = other.m_name;
+    m_rotationSpeed = other.m_rotationSpeed;
+    m_orbitSpeed = other.m_orbitSpeed;
+    m_distanceToSun = other.m_distanceToSun;
+    m_size = other.m_size;
+
+    if (m_texture) {
+        delete m_texture;
+    }
+    m_texture = nullptr;
+
+    return *this;
+}
+
+Planet& Planet::operator=(Planet&& other) noexcept
+{
+    if (this == &other) {
+        return *this;
+    }
+
+    m_name = std::move(other.m_name);
+    m_rotationSpeed = other.m_rotationSpeed;
+    m_orbitSpeed = other.m_orbitSpeed;
+    m_distanceToSun = other.m_distanceToSun;
+    m_size = other.m_size;
+
+    if (m_texture) {
+        delete m_texture;
+    }
+    m_texture = other.m_texture;
+    other.m_texture = nullptr;
+
+    return *this;
+}
+
+Planet::~Planet()
+{
+    delete m_texture;
+}
+
+void Planet::loadMesh(const std::filesystem::path& meshPath) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(meshPath.string(), aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -41,12 +97,12 @@ void Planet::loadMesh(const std::filesystem::path& meshPath) {
 
     std::vector<uint32_t> indices;
     for( unsigned int i = 0; i < mesh->mNumFaces; i++) {
-		aiFace face = mesh->mFaces[i];
-		for (unsigned int j = 0; j < face.mNumIndices; j++) {
-			indices.push_back(face.mIndices[j]);
-		}
-	}
-    
+        aiFace face = mesh->mFaces[i];
+        for (unsigned int j = 0; j < face.mNumIndices; j++) {
+            indices.push_back(face.mIndices[j]);
+        }
+    }
+
     m_geometryBuffer.bindAndUploadBufferData(vertices.size() * sizeof(float), vertices.data(), indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
     m_geometryBuffer.setupAttributes();
     std::cout << "Mesh loaded for planet: " << m_name << std::endl;

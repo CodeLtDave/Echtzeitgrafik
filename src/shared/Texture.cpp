@@ -88,6 +88,6 @@ void Texture::loadTexture(const std::filesystem::path& filePath) {
     GLenum format = (m_channels == 4) ? GL_RGBA : GL_RGB;
     glTexImage2D(m_target, 0, format, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(m_target);
-    unbind();
     stbi_image_free(data);
+    unbind();
 }
