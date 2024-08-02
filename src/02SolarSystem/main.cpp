@@ -21,41 +21,21 @@ class SolarSystemSimulation {
 public:
     SolarSystemSimulation() {
         std::cout << "Hello SolarSystemSimulation!" << std::endl;
+
         window = initAndCreateWindow();
         shader = new Shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
-
-        projectionIsPerspective = true;
-        glfwSetWindowUserPointer(window, this);
-        glfwSetKeyCallback(window, SolarSystemSimulation::spaceBarPressed);
-
-        // SolarSystem initialisieren
         solarSystem = new SolarSystem();
+
+        initializeScene();
     }
 
     ~SolarSystemSimulation() {
+        delete shader;
         delete solarSystem;
     }
 
     void run() {
-        glViewport(0, 0, windowWidth, windowHeight);
-
-        // Create and Initialize Point Light
-        PointLight pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-        pointLight.apply(*shader);
-
-        GLint modelLoc = shader->getLocation("model");
-        shader->setUniform(modelLoc, modelMatrix);
-        GLint viewPosLoc = shader->getLocation("viewPos");
-        shader->setUniform(viewPosLoc, viewPosVec);
-        GLint viewLoc = shader->getLocation("view");
-        shader->setUniform(viewLoc, viewMatrix);
-        GLint projLoc = shader->getLocation("projection");
-        shader->setUniform(projLoc, projectionMatrix);
-
-        glEnable(GL_DEPTH_TEST);
-
         while (glfwWindowShouldClose(window) == 0) {
-
             // clear the window
             glClearColor(0.0f, 0.1f, 0.2f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -70,29 +50,49 @@ public:
             glfwPollEvents();
 
             calculateFPS();
-
+             
+            // Check for OpenGL errors
             GLenum error = glGetError();
             if (error != GL_NO_ERROR) {
                 std::cerr << "OpenGL Error: " << error << std::endl;
             }
         }
-
         glfwTerminate();
     }
+
+
 
 private:
     GLFWwindow* window;
     Shader* shader;
     SolarSystem* solarSystem;
-    bool projectionIsPerspective;
+    bool projectionIsPerspective = true;
 
-    static void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-            SolarSystemSimulation* simulation = static_cast<SolarSystemSimulation*>(glfwGetWindowUserPointer(window));
-            if (simulation) {
-                simulation->swapPerspective();
-            }
-        }
+    void initializeScene()
+    {
+        // Set the viewport
+        glViewport(0, 0, windowWidth, windowHeight);
+
+        // Set callback functions for keyboard ("space") input
+        glfwSetWindowUserPointer(window, this);
+        glfwSetKeyCallback(window, SolarSystemSimulation::spaceBarPressed);
+
+        // Create and Initialize Point Light
+        PointLight pointLight(glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+        pointLight.apply(*shader);
+
+        // set the shader
+        GLint viewPosLoc = shader->getLocation("viewPos");
+        shader->setUniform(viewPosLoc, viewPosVec);
+        GLint viewLoc = shader->getLocation("view");
+        shader->setUniform(viewLoc, viewMatrix);
+        GLint modelLoc = shader->getLocation("model");
+        shader->setUniform(modelLoc, modelMatrix);
+        GLint projLoc = shader->getLocation("projection");
+        shader->setUniform(projLoc, projectionMatrix);
+
+        // Enable depth test
+        glEnable(GL_DEPTH_TEST);
     }
 
     void swapPerspective() {
@@ -109,12 +109,26 @@ private:
         GLint projLoc = shader->getLocation("projection");
         shader->setUniform(projLoc, projectionMatrix);
 	}
+
+    static void spaceBarPressed(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+            SolarSystemSimulation* simulation = static_cast<SolarSystemSimulation*>(glfwGetWindowUserPointer(window));
+            if (simulation) {
+                simulation->swapPerspective();
+            }
+        }
+    }
 };
 
 int main(int argc, char** argv)
-{
+{    
+    // Aktiviere Speicherleck-Erkennung
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+ 
     SolarSystemSimulation simulation;
     simulation.run();
 
+    _CrtDumpMemoryLeaks();
     return 0;
 }
